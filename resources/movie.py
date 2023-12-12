@@ -84,6 +84,9 @@ class MovieListResource(Resource) :
             connection.close()
             return {"result" : "fail", "error" : str(e)}, 500
         
+        if len(result_list) == 0 :
+            return {"error" : "해당 영화가 존재하지 않습니다."}, 400
+
         return {"result" : "success", "items" : result_list, "count" : len(result_list)}, 200
     
 # 영화 상세 정보
