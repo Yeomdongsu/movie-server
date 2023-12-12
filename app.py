@@ -2,7 +2,8 @@ from flask import Flask
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
 from config import Config
-from resources.movie import MovieListResource, MovieResource, MovieReviewResource
+from resources.movie import MovieListResource, MovieResource
+from resources.review import MovieReviewResource
 from resources.user import UserLoginResource, UserLogoutResourcce, UserRegisterResource
 # 로그아웃 관련된 import문
 from resources.user import jwt_blocklist
