@@ -31,7 +31,7 @@ api.add_resource(UserLoginResource, "/user/login")
 api.add_resource(UserLogoutResourcce, "/user/logout")
 api.add_resource(MovieListResource, "/movie")
 api.add_resource(MovieResource, "/movie/<int:movie_id>")
-api.add_resource(MovieReviewResource, "/movie/review/<int:movie_id>")
+api.add_resource(MovieReviewResource, "/movie/<int:movie_id>/review")
 
 if __name__ == "__main__" :
     app.run()
