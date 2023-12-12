@@ -7,7 +7,7 @@ from mysql.connector import Error
 # 영화 리뷰     
 class MovieReviewResource(Resource) :
     # 해당 영화 리뷰 정보
-    @jwt_required()
+    @jwt_required(optional=True)
     def get(self, movie_id) :
         
         offset = request.args.get("offset")
