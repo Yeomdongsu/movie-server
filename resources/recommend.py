@@ -11,9 +11,10 @@ class MovieRecommendResource(Resource) :
 
         user_id = get_jwt_identity()
 
-        # 1. 영화별 상관계수를 뽑아야 한다.
+        # 영화별 상관계수를 뽑아야 한다.
+
         # 1-1. DB에서 movie 테이블과 review 테이블의 데이터를 가져와서
-        #       데이터프레임으로 만든다.
+        #      데이터프레임으로 만든다.
 
         try :
             connection = get_connection()
@@ -40,7 +41,7 @@ class MovieRecommendResource(Resource) :
 
             corr_movie = df.corr(min_periods=40)
 
-            # 2. 이 유저의 별점 정보를 DB에서 가져온다.
+            # 2. 이 유저의 별점(리뷰) 정보를 DB에서 가져온다.
             
             query = '''
                     select m.title, r.rating
@@ -66,7 +67,6 @@ class MovieRecommendResource(Resource) :
             return {"result" : "fail", "error" : str(e)}, 500
 
         # 3. 가중치로 계산하여 응답한다.
-        #    이미 본 영화 및 중복 영화 제거한다.
 
         my_rating = pd.DataFrame(result_list)
 
@@ -79,10 +79,12 @@ class MovieRecommendResource(Resource) :
             recom_movie["weight"] = recom_movie["corr"] * my_rating["rating"][i]
             movie_list = pd.concat([movie_list, recom_movie])
 
+        # 이미 본 영화 제거
         for title in my_rating["title"] :
             if title in movie_list.index :
                 movie_list.drop(title, axis=0, inplace=True)
 
+        # 중복된 영화 제거 후 상관계수 높은 순으로 
         movie_list = movie_list.groupby("title")["weight"].max().sort_values(ascending=False).head(10)
         
         # 위 코드는 시리즈 타입이므로 json 형식으로 보낼 수 있게 바꾼다.
