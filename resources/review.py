@@ -5,7 +5,7 @@ from mysql_connection import get_connection
 from mysql.connector import Error
 
 # 영화 리뷰     
-class MovieReviewResource(Resource) :
+class ReviewResource(Resource) :
     # 해당 영화 리뷰 정보
     @jwt_required(optional=True)
     def get(self, movie_id) :

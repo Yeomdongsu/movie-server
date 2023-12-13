@@ -1,5 +1,5 @@
 from flask import request
-from flask_jwt_extended import get_jwt_identity, jwt_required
+from flask_jwt_extended import jwt_required
 from flask_restful import Resource
 from mysql_connection import get_connection
 from mysql.connector import Error
@@ -7,7 +7,7 @@ from mysql.connector import Error
 # 영화 리스트
 class MovieListResource(Resource) :
     # 영화 정보를 보여주는 API 개발(리뷰개수 내림차순)
-    @jwt_required()
+    @jwt_required(optional=True)
     def get(self) :
 
         offset = request.args.get("offset")
@@ -48,7 +48,7 @@ class MovieListResource(Resource) :
         return {"result" : "success", "items" : result_list, "count" : len(result_list)}, 200
     
     # 영화 검색 API
-    @jwt_required()
+    @jwt_required(optional=True)
     def post(self) :
 
         data = request.get_json()
@@ -92,7 +92,7 @@ class MovieListResource(Resource) :
 # 영화 상세 정보
 class MovieResource(Resource) :
     # 영화 상세 정보
-    @jwt_required()
+    @jwt_required(optional=True)
     def get(self, movie_id) :
         
         try :
