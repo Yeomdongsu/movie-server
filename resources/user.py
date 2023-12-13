@@ -1,5 +1,5 @@
 from flask import request
-from flask_jwt_extended import create_access_token, get_jwt, jwt_required
+from flask_jwt_extended import create_access_token, get_jwt, get_jwt_identity, jwt_required
 from flask_restful import Resource
 from mysql_connection import get_connection
 from mysql.connector import Error
@@ -112,3 +112,43 @@ class UserLogoutResourcce(Resource) :
 
         return {"result" : "success"}, 200
 
+# 내 정보 화면(내가 작성한 리뷰까지)
+class UserInfoResource(Resource) :
+    @jwt_required()
+    def get(self) :
+
+        user_id = get_jwt_identity()
+
+        offset = request.args.get("offset")
+        limit = request.args.get("limit")
+
+        try :
+            connection = get_connection()
+
+            query = '''
+                    select u.email, u.nickname, u.gender, m.title, r.rating
+                    from user u
+                    join review r
+                    on u.id = r.userId
+                    join movie m
+                    on r.movieId = m.id
+                    where u.id = %s
+                    order by r.createdAt desc
+                    limit ''' + offset + ''', ''' + limit + ''';
+                    '''
+            record = (user_id, )
+            cursor = connection.cursor(dictionary=True)
+            cursor.execute(query, record)
+
+            result_list = cursor.fetchall()
+
+            cursor.close()
+            connection.close()
+
+        except Error as e :
+            print(e)
+            cursor.close()
+            connection.close()
+            return {"result" : "fail", "error" : str(e)}, 500
+        
+        return {"result" : "success", "items" : result_list, "count" : len(result_list)}, 200

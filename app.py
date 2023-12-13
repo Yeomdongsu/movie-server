@@ -5,7 +5,7 @@ from config import Config
 from resources.movie import MovieListResource, MovieResource
 from resources.recommend import MovieRecommendResource
 from resources.review import ReviewResource
-from resources.user import UserLoginResource, UserLogoutResourcce, UserRegisterResource
+from resources.user import UserInfoResource, UserLoginResource, UserLogoutResourcce, UserRegisterResource
 # 로그아웃 관련된 import문
 from resources.user import jwt_blocklist
 
@@ -35,6 +35,7 @@ api.add_resource(MovieListResource, "/movie")
 api.add_resource(MovieResource, "/movie/<int:movie_id>")
 api.add_resource(ReviewResource, "/movie/<int:movie_id>/review")
 api.add_resource(MovieRecommendResource, "/movie/recommend")
+api.add_resource(UserInfoResource, "/user/info")
 
 if __name__ == "__main__" :
     app.run()
